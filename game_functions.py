@@ -55,14 +55,16 @@ def update_screen(settings, screen, ship, bullets, aliens):
     # color the screen with background color
     screen.fill(settings.bg_color)
 
+    # draw fleet of aliens
+    aliens.draw(screen)
+    aliens.update()
+    update_fleet(aliens)
+
     # draw new bullets on the screen; move bullets
     for bullet in bullets.sprites():
         bullet.draw_bullet()
         bullet.update()
 
-    # draw fleet of aliens
-    aliens.draw(screen)
-    aliens.update()
 
     # update the ship
     ship.update()
@@ -107,9 +109,14 @@ def create_alien(settings, screen, aliens, alien_number, row_number):
     alien.rect.x = alien.x
 
     alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
-
     aliens.add(alien)
 
 
 def check_collision(bullets, aliens):
     pygame.sprite.groupcollide(bullets, aliens, True, True)
+
+def update_fleet(aliens):
+    for alien in aliens:
+        if alien.check_screen():
+            alien.direction = alien.direction * -1
+            alien.rect.y += alien.rect.height

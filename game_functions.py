@@ -51,32 +51,6 @@ def keyup_event(event, ship):
         ship.rotate_clockwise = False
 
 
-def update_screen(settings, screen, ship, bullets, aliens):
-    # color the screen with background color
-    screen.fill(settings.bg_color)
-
-    # draw fleet of aliens
-    aliens.draw(screen)
-    aliens.update()
-    update_fleet(aliens)
-
-    # draw new bullets on the screen; move bullets
-    for bullet in bullets.sprites():
-        bullet.draw_bullet()
-        bullet.update()
-
-
-    # update the ship
-    ship.update()
-    # draw the ship on the screen
-    ship.blitme()
-
-    check_collision(bullets, aliens)
-
-    # update the display
-    pygame.display.flip()
-
-
 def create_fleet(settings, screen, ship, aliens):
     """create a fleet of aliens"""
     alien = Alien(settings, screen)
@@ -112,11 +86,40 @@ def create_alien(settings, screen, aliens, alien_number, row_number):
     aliens.add(alien)
 
 
-def check_collision(bullets, aliens):
-    pygame.sprite.groupcollide(bullets, aliens, True, True)
+def check_collision(settings, bullets, aliens):
+    if pygame.sprite.groupcollide(bullets, aliens, True, True):
+        settings.score += 10
+
 
 def update_fleet(aliens):
     for alien in aliens:
+        alien.direction = alien.direction * -1
+        alien.rect.y += 2
+
+
+def update_screen(settings, screen, ship, bullets, aliens):
+    # color the screen with background color
+    screen.fill(settings.bg_color)
+
+    # draw fleet of aliens
+    aliens.draw(screen)
+    aliens.update()
+
+    for alien in aliens:
         if alien.check_screen():
-            alien.direction = alien.direction * -1
-            alien.rect.y += alien.rect.height
+            update_fleet(aliens)
+
+    # draw new bullets on the screen; move bullets
+    for bullet in bullets.sprites():
+        bullet.draw_bullet()
+        bullet.update()
+
+    # update the ship
+    ship.update()
+    # draw the ship on the screen
+    ship.blitme()
+
+    check_collision(settings, bullets, aliens)
+
+    # update the display
+    pygame.display.flip()

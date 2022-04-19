@@ -32,6 +32,8 @@ def alien_invasion():
         # updates the screen from game_functions
         gf.update_screen(settings, screen, ship, bullets, aliens)
 
+    print(settings.score)
+
 
 
 alien_invasion()

@@ -20,5 +20,9 @@ class Settings():
         self.lives = 3
         self.score = 0
 
-        #
+        # alien settings
+        self.points = 10
+        self.drop_speed = 10
+
+        # wave settings
         self.wave_number = 1

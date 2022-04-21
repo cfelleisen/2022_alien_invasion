@@ -91,20 +91,8 @@ def update_fleet(aliens):
         alien.direction = alien.direction * -1
         alien.rect.y += alien.drop_speed
 
-def check_collision(settings, bullets, aliens):
-    if pygame.sprite.groupcollide(bullets, aliens, True, True):
-        settings.score += 10
 
-
-def new_wave(settings, screen, ship, aliens):
-    if len(aliens) == 0:
-        create_fleet(settings, screen, ship, aliens)
-        settings.wave_number += 1
-
-def update_screen(settings, screen, ship, bullets, aliens):
-    # color the screen with background color
-    screen.fill(settings.bg_color)
-
+def update_aliens(aliens, screen):
     # draw fleet of aliens
     aliens.draw(screen)
     aliens.update()
@@ -115,6 +103,24 @@ def update_screen(settings, screen, ship, bullets, aliens):
             break
 
 
+def check_collision(settings, bullets, aliens):
+    if pygame.sprite.groupcollide(bullets, aliens, True, True):
+        settings.score += settings.points
+
+
+def new_wave(settings, screen, ship, aliens):
+    if len(aliens) == 0:
+        create_fleet(settings, screen, ship, aliens)
+        settings.wave_number += 1
+        settings.drop_speed += settings.wave_number
+        settings.points += settings.wave_number
+
+
+def update_screen(settings, screen, ship, bullets, aliens):
+    # color the screen with background color
+    screen.fill(settings.bg_color)
+
+    update_aliens(aliens, screen)
 
     # draw new bullets on the screen; move bullets
     for bullet in bullets.sprites():

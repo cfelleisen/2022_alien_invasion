@@ -29,7 +29,8 @@ class Alien(Sprite):
 
         self.speed = 1
         self.direction = 1
-        self.drop_speed = 10
+        self.drop_speed = settings.drop_speed
+
 
     def blitme(self):
         """ draw the alien on the screen"""

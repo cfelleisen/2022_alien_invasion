@@ -112,6 +112,9 @@ def update_screen(settings, screen, ship, bullets, aliens):
     for alien in aliens:
         if alien.check_screen():
             update_fleet(aliens)
+            break
+
+
 
     # draw new bullets on the screen; move bullets
     for bullet in bullets.sprites():

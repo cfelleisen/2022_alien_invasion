@@ -31,9 +31,13 @@ def keydown_event(event, settings, screen, ship, bullets):
         ship.rotate_counterclockwise = True
     if event.key == pygame.K_e:
         ship.rotate_clockwise = True
-    if event.key == pygame.K_SPACE:
+    if event.key == pygame.K_SPACE and len(bullets) < settings.bullet_limit:
         new_bullet = Bullets(settings, screen, ship)
         bullets.add(new_bullet)
+    if event.key == pygame.K_ESCAPE:
+        print("Score:", str(settings.score))
+        sys.exit()
+
 
 
 def keyup_event(event, ship):
@@ -108,12 +112,29 @@ def check_collision(settings, bullets, aliens):
         settings.score += settings.points
 
 
+
+def alien_invasion(settings, aliens):
+    for alien in aliens:
+        if alien.rect.bottom > settings.screen_height:
+            settings.score -= settings.points/2
+            alien.kill()
+
+
+def update_bullets(bullets):
+    for bullet in bullets.sprites():
+        bullet.draw_bullet()
+        bullet.update()
+        if bullet.rect.bottom < 0:
+            bullet.kill()
+
+
 def new_wave(settings, screen, ship, aliens):
     if len(aliens) == 0:
         create_fleet(settings, screen, ship, aliens)
         settings.wave_number += 1
-        settings.drop_speed += settings.wave_number
-        settings.points += settings.wave_number
+        settings.drop_speed *= settings.difficulty_scale
+        settings.points *= settings.difficulty_scale
+
 
 
 def update_screen(settings, screen, ship, bullets, aliens):
@@ -121,11 +142,10 @@ def update_screen(settings, screen, ship, bullets, aliens):
     screen.fill(settings.bg_color)
 
     update_aliens(aliens, screen)
+    alien_invasion(settings, aliens)
 
     # draw new bullets on the screen; move bullets
-    for bullet in bullets.sprites():
-        bullet.draw_bullet()
-        bullet.update()
+    update_bullets(bullets)
 
     # update the ship
     ship.update()

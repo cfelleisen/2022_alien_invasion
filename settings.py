@@ -15,6 +15,7 @@ class Settings():
         self.bullet_width = 3
         self.bullet_height = 15
         self.bullet_color = (255, 0, 0)
+        self.bullet_limit = 5
 
         # player settings
         self.lives = 3
@@ -26,3 +27,6 @@ class Settings():
 
         # wave settings
         self.wave_number = 1
+
+        # difficulty settings
+        self.difficulty_scale = float(1+self.wave_number*0.1)

@@ -64,6 +64,10 @@ class Ship():
         self.rect.centerx = self.centerx
         self.rect.centery = self.centery
 
+
+    def center_ship(self):
+        self.center = self.screen_rect.centerx
+
     def blitRotate(self):
         rotated_image = pygame.transform.rotate(self.image, self.angle_rotation)
         # self.rect = rotated_image.get_rect()

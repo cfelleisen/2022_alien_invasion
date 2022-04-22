@@ -2,6 +2,7 @@ import pygame
 import sys
 from bullets import Bullets
 from aliens import Alien
+from time import sleep
 
 
 def check_events(settings, screen, ship, bullets):
@@ -37,7 +38,6 @@ def keydown_event(event, settings, screen, ship, bullets):
     if event.key == pygame.K_ESCAPE:
         print("Score:", str(settings.score))
         sys.exit()
-
 
 
 def keyup_event(event, ship):
@@ -96,7 +96,7 @@ def update_fleet(settings, aliens):
         alien.rect.y += settings.alien_drop_speed
 
 
-def update_aliens(settings,screen, ship, aliens):
+def update_aliens(settings, screen, ship, aliens, bullets):
     # draw fleet of aliens
     aliens.draw(screen)
     aliens.update()
@@ -106,29 +106,45 @@ def update_aliens(settings,screen, ship, aliens):
             update_fleet(settings, aliens)
             break
 
+    check_collision(settings, bullets, aliens)
+    ship_hit(settings, screen, ship, aliens, bullets)
     new_wave(settings, screen, ship, aliens)
     alien_invasion(settings, aliens)
 
-def check_collision(settings, bullets, aliens):
+
+def check_collisions(settings, screen, ship, bullets, aliens):
     if pygame.sprite.groupcollide(bullets, aliens, True, True):
         settings.score += int(settings.points)
 
-
-def check_end(settings, screen, ship, aliens):
     if pygame.sprite.spritecollideany(ship, aliens):
-        aliens.empty()
+        ship_hit(settings, screen, ship, aliens, bullets)
+
+
+def ship_hit(settings, screen, ship, aliens, bullets):
         settings.lives -= 1
         if settings.lives > 0:
-            new_wave(settings, screen, ship, aliens)
+            reset_wave(settings, screen, ship, aliens, bullets)
         else:
-            print("Game Over. Your score is", settings.score)
+            end_game(settings)
 
+
+def reset_wave(settings, screen, ship, aliens, bullets):
+    aliens.empty()
+    bullets.empty()
+
+    create_fleet(settings, screen, ship, aliens)
+    ship.center_ship()
+
+    sleep(0.5)
+
+def end_game(settings):
+    print("Game Over. Your score is", settings.score)
 
 def alien_invasion(settings, aliens):
     for alien in aliens:
         if alien.rect.bottom > settings.screen_height:
             settings.score -= int(settings.points*len(aliens)/2)
-            alien.empty()
+            aliens.empty()
             break
 
 
@@ -158,7 +174,7 @@ def update_screen(settings, screen, ship, bullets, aliens):
     # color the screen with background color
     screen.fill(settings.bg_color)
 
-    update_aliens(settings,screen, ship, aliens)
+    update_aliens(settings, screen, ship, aliens, bullets)
     alien_invasion(settings, aliens)
 
     # draw new bullets on the screen; move bullets
@@ -168,10 +184,6 @@ def update_screen(settings, screen, ship, bullets, aliens):
     ship.update()
     # draw the ship on the screen
     ship.blitme()
-
-    check_collision(settings, bullets, aliens)
-
-    check_end(settings, screen, ship, aliens)
 
     # update the display
     pygame.display.flip()

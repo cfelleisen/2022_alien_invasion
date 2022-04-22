@@ -74,7 +74,7 @@ def get_number_of_aliens(settings, alien_width):
 
 
 def get_number_rows(settings, alien_height, ship_height):
-    available_space_y = settings.screen_height - 3 * alien_height - ship_height
+    available_space_y = settings.screen_height - (3 * alien_height * settings.difficulty_scale) - ship_height
     number_of_rows = int(available_space_y/(2*alien_height))
     return number_of_rows
 
@@ -90,34 +90,46 @@ def create_alien(settings, screen, aliens, alien_number, row_number):
     aliens.add(alien)
 
 
-def update_fleet(aliens):
+def update_fleet(settings, aliens):
     for alien in aliens:
         alien.direction = alien.direction * -1
-        alien.rect.y += alien.drop_speed
+        alien.rect.y += settings.alien_drop_speed
 
 
-def update_aliens(aliens, screen):
+def update_aliens(settings,screen, ship, aliens):
     # draw fleet of aliens
     aliens.draw(screen)
     aliens.update()
 
     for alien in aliens:
         if alien.check_screen():
-            update_fleet(aliens)
+            update_fleet(settings, aliens)
             break
 
+    new_wave(settings, screen, ship, aliens)
+    alien_invasion(settings, aliens)
 
 def check_collision(settings, bullets, aliens):
     if pygame.sprite.groupcollide(bullets, aliens, True, True):
-        settings.score += settings.points
+        settings.score += int(settings.points)
 
+
+def check_end(settings, screen, ship, aliens):
+    if pygame.sprite.spritecollideany(ship, aliens):
+        aliens.empty()
+        settings.lives -= 1
+        if settings.lives > 0:
+            new_wave(settings, screen, ship, aliens)
+        else:
+            print("Game Over. Your score is", settings.score)
 
 
 def alien_invasion(settings, aliens):
     for alien in aliens:
         if alien.rect.bottom > settings.screen_height:
-            settings.score -= settings.points/2
-            alien.kill()
+            settings.score -= int(settings.points*len(aliens)/2)
+            alien.empty()
+            break
 
 
 def update_bullets(bullets):
@@ -131,17 +143,22 @@ def update_bullets(bullets):
 def new_wave(settings, screen, ship, aliens):
     if len(aliens) == 0:
         create_fleet(settings, screen, ship, aliens)
-        settings.wave_number += 1
-        settings.drop_speed *= settings.difficulty_scale
-        settings.points *= settings.difficulty_scale
+        increase_difficulty(settings)
 
+
+def increase_difficulty(settings):
+    settings.wave_number += 1
+    settings.alien_speed *= settings.difficulty_scale
+    settings.alien_drop_speed += 1 * settings.difficulty_scale
+    settings.points *= settings.difficulty_scale
+    settings.scale *= 0.96
 
 
 def update_screen(settings, screen, ship, bullets, aliens):
     # color the screen with background color
     screen.fill(settings.bg_color)
 
-    update_aliens(aliens, screen)
+    update_aliens(settings,screen, ship, aliens)
     alien_invasion(settings, aliens)
 
     # draw new bullets on the screen; move bullets
@@ -153,7 +170,8 @@ def update_screen(settings, screen, ship, bullets, aliens):
     ship.blitme()
 
     check_collision(settings, bullets, aliens)
-    new_wave(settings, screen, ship, aliens)
+
+    check_end(settings, screen, ship, aliens)
 
     # update the display
     pygame.display.flip()

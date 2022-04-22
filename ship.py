@@ -7,8 +7,8 @@ class Ship():
         self.screen = screen
 
         # load image of ship and access image data
-        self.image = pygame.image.load('images/ship.png')
-        self.image = pygame.transform.scale(self.image, (50, 50))
+        self.image = pygame.image.load('images/xwing_pixel.png')
+        self.image = pygame.transform.scale(self.image, (85, 75))
 
         # tells computer to interpret self.image as a rectangle
         self.rect = self.image.get_rect()
@@ -66,7 +66,8 @@ class Ship():
 
 
     def center_ship(self):
-        self.center = self.screen_rect.centerx
+        self.rect.centerx = self.screen_rect.centerx
+        self.rect.bottom = self.screen_rect.bottom
 
     def blitRotate(self):
         rotated_image = pygame.transform.rotate(self.image, self.angle_rotation)

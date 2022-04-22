@@ -111,7 +111,6 @@ def update_aliens(settings, screen, ship, aliens, bullets):
     new_wave(settings, screen, ship, aliens)
 
 
-
 def check_collisions(settings, screen, ship, bullets, aliens):
     if pygame.sprite.groupcollide(bullets, aliens, True, True):
         settings.score += int(settings.points)
@@ -120,6 +119,7 @@ def check_collisions(settings, screen, ship, bullets, aliens):
         ship_hit(settings, screen, ship, aliens, bullets)
 
     alien_invasion(settings, screen, ship, aliens, bullets)
+
 
 def ship_hit(settings, screen, ship, aliens, bullets):
         settings.lives -= 1
@@ -133,14 +133,16 @@ def reset_wave(settings, screen, ship, aliens, bullets):
     aliens.empty()
     bullets.empty()
 
+    ship.center_ship( )
     create_fleet(settings, screen, ship, aliens)
-    ship.center_ship()
+
 
     sleep(0.5)
 
 
 def end_game(settings):
     print("Game Over. Your score is", settings.score)
+    settings.game_on = False
 
 
 def alien_invasion(settings, screen, ship, aliens, bullets):
@@ -178,7 +180,6 @@ def update_screen(settings, screen, ship, bullets, aliens):
     screen.fill(settings.bg_color)
 
     update_aliens(settings, screen, ship, aliens, bullets)
-    alien_invasion(settings, aliens)
 
     # draw new bullets on the screen; move bullets
     update_bullets(bullets)

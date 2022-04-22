@@ -14,6 +14,7 @@ def alien_invasion():
     settings = Settings()
     # create a display by inputting  width and height of screen
     screen = pygame.display.set_mode((settings.screen_width, settings.screen_height))
+
     # names the displayed screen
     pygame.display.set_caption('Alien Invasion')
     # make a player ship
@@ -25,17 +26,12 @@ def alien_invasion():
     gf.create_fleet(settings, screen,ship, aliens)
 
     # loop to start animation
-    while True:
+    while settings.game_on:
 
         # access event handler from game_functions
         gf.check_events(settings, screen, ship, bullets)
         # updates the screen from game_functions
         gf.update_screen(settings, screen, ship, bullets, aliens)
-
-    print(settings.score)
-
-
-
 
 
 alien_invasion()

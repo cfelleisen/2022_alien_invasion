@@ -13,8 +13,8 @@ class Alien(Sprite):
         self.settings = settings
 
         # load alien ship image and scale it to fit screen & get rectangular properties
-        self.image = pygame.image.load('images/alien.png') # loads image of alien ship from directory (pixabay.com)
-        self.image = pygame.transform.scale(self.image, (80 * self.settings.scale, 40 * self.settings.scale)) # scales image of alien ship
+        self.image = pygame.image.load('images/tie_fighter_pixel.png') # loads image of alien ship from directory (pixabay.com)
+        self.image = pygame.transform.scale(self.image, (60 * self.settings.scale, 60 * self.settings.scale)) # scales image of alien ship
         self.rect = self.image.get_rect()
 
         # set starting location

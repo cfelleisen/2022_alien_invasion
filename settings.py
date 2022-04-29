@@ -30,6 +30,13 @@ class Settings():
         # wave settings
         self.wave_number = 1
 
+        # bomb settings
+        self.bomb_speed = 3
+        self.bomb_width = 3
+        self.bomb_height = 15
+        self.bomb_color = (0, 255, 0)
+        self.bomb_limit = 5
+
         # difficulty settings
         self.difficulty_scale = float(1+self.wave_number*0.2)
 

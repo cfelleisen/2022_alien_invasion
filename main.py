@@ -22,7 +22,9 @@ def alien_invasion():
 
     # make a group to store bullets in
     bullets = Group()
+    bombs = Group()
     aliens = Group()
+
     gf.create_fleet(settings, screen,ship, aliens)
 
     # loop to start animation
@@ -31,7 +33,7 @@ def alien_invasion():
         # access event handler from game_functions
         gf.check_events(settings, screen, ship, bullets)
         # updates the screen from game_functions
-        gf.update_screen(settings, screen, ship, bullets, aliens)
+        gf.update_screen(settings, screen, ship, bullets, aliens, bombs)
 
 
 alien_invasion()

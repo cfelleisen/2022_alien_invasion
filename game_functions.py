@@ -14,7 +14,6 @@ def check_events(settings, screen, ship, bullets):
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             keydown_event(event, settings, screen, ship, bullets)
-
         elif event.type == pygame.KEYUP:
             keyup_event(event, ship)
 
@@ -96,7 +95,7 @@ def update_fleet(settings, aliens):
         alien.rect.y += settings.alien_drop_speed
 
 
-def update_aliens(settings, screen, ship, aliens, bullets):
+def update_aliens(settings, screen, ship, aliens, bullets, bombs):
     # draw fleet of aliens
     aliens.draw(screen)
     aliens.update()
@@ -106,16 +105,16 @@ def update_aliens(settings, screen, ship, aliens, bullets):
             update_fleet(settings, aliens)
             break
 
-    check_collisions(settings, screen, ship, bullets, aliens)
+    check_collisions(settings, screen, ship, bullets, aliens, bombs)
 
     new_wave(settings, screen, ship, aliens)
 
 
-def check_collisions(settings, screen, ship, bullets, aliens):
+def check_collisions(settings, screen, ship, bullets, aliens, bombs):
     if pygame.sprite.groupcollide(bullets, aliens, True, True):
         settings.score += int(settings.points)
 
-    if pygame.sprite.spritecollideany(ship, aliens):
+    if pygame.sprite.spritecollideany(ship, aliens) or pygame.sprite.spritecollideany(ship, bombs):
         ship_hit(settings, screen, ship, aliens, bullets)
 
     alien_invasion(settings, screen, ship, aliens, bullets)
@@ -175,11 +174,11 @@ def increase_difficulty(settings):
     settings.scale *= 0.96
 
 
-def update_screen(settings, screen, ship, bullets, aliens):
+def update_screen(settings, screen, ship, bullets, aliens, bombs):
     # color the screen with background color
     screen.fill(settings.bg_color)
 
-    update_aliens(settings, screen, ship, aliens, bullets)
+    update_aliens(settings, screen, ship, aliens, bullets, bombs)
 
     # draw new bullets on the screen; move bullets
     update_bullets(bullets)

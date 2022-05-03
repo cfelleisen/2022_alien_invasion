@@ -41,4 +41,4 @@ class Settings():
         self.difficulty_scale = float(1+self.wave_number*0.2)
 
         # play game
-        self.game_on = True
+        self.game_active = False

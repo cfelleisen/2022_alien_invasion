@@ -5,7 +5,7 @@ from aliens import Alien
 from time import sleep
 
 
-def check_events(settings, screen, ship, bullets):
+def check_events(settings, screen, ship, bullets, play_button):
     """ checks for key/mouse events and responds"""
     # loop to check keypress events
     for event in pygame.event.get():
@@ -16,6 +16,10 @@ def check_events(settings, screen, ship, bullets):
             keydown_event(event, settings, screen, ship, bullets)
         elif event.type == pygame.KEYUP:
             keyup_event(event, ship)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            if play_button.rect.collidepoint(mouse_x, mouse_y):
+                settings.game_active = True
 
 
 def keydown_event(event, settings, screen, ship, bullets):
@@ -174,19 +178,23 @@ def increase_difficulty(settings):
     settings.scale *= 0.96
 
 
-def update_screen(settings, screen, ship, bullets, aliens, bombs):
+def update_screen(settings, screen, ship, bullets, aliens, bombs, play_button):
     # color the screen with background color
     screen.fill(settings.bg_color)
 
-    update_aliens(settings, screen, ship, aliens, bullets, bombs)
+    if not settings.game_active:
+        play_button.draw_button()
 
-    # draw new bullets on the screen; move bullets
-    update_bullets(bullets)
+    elif settings.game_active:
+        update_aliens(settings, screen, ship, aliens, bullets, bombs)
 
-    # update the ship
-    ship.update()
-    # draw the ship on the screen
-    ship.blitme()
+        # draw new bullets on the screen; move bullets
+        update_bullets(bullets)
+
+        # update the ship
+        ship.update()
+        # draw the ship on the screen
+        ship.blitme()
 
     # update the display
     pygame.display.flip()

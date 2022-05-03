@@ -4,6 +4,7 @@ from settings import Settings
 from ship import Ship
 import game_functions as gf
 from pygame.sprite import Group
+from button import Button
 
 
 # define main game function
@@ -17,6 +18,10 @@ def alien_invasion():
 
     # names the displayed screen
     pygame.display.set_caption('Alien Invasion')
+
+    # make a play button
+    play_button = Button(settings, screen, "Play!")
+
     # make a player ship
     ship = Ship(screen)
 
@@ -28,12 +33,12 @@ def alien_invasion():
     gf.create_fleet(settings, screen,ship, aliens)
 
     # loop to start animation
-    while settings.game_on:
+    while True:
 
         # access event handler from game_functions
-        gf.check_events(settings, screen, ship, bullets)
+        gf.check_events(settings, screen, ship, bullets, play_button)
         # updates the screen from game_functions
-        gf.update_screen(settings, screen, ship, bullets, aliens, bombs)
+        gf.update_screen(settings, screen, ship, bullets, aliens, bombs, play_button)
 
 
 alien_invasion()

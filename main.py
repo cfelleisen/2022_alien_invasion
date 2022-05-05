@@ -33,7 +33,7 @@ def alien_invasion():
     gf.create_fleet(settings, screen,ship, aliens)
 
     # loop to start animation
-    while True:
+    while settings.lives > 0:
 
         # access event handler from game_functions
         gf.check_events(settings, screen, ship, bullets, play_button)

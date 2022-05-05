@@ -31,7 +31,7 @@ class Settings():
         self.wave_number = 1
 
         # bomb settings
-        self.bomb_speed = 3
+        self.bomb_speed = 2
         self.bomb_width = 3
         self.bomb_height = 15
         self.bomb_color = (0, 255, 0)

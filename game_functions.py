@@ -1,10 +1,12 @@
 import pygame
 import sys
 from bullets import Bullets
+from bombs import Bombs
 from aliens import Alien
 from time import sleep
+from pygame.sprite import Group
 
-
+"""Event Handler Functions"""
 def check_events(settings, screen, ship, bullets, play_button):
     """ checks for key/mouse events and responds"""
     # loop to check keypress events
@@ -58,6 +60,7 @@ def keyup_event(event, ship):
         ship.rotate_clockwise = False
 
 
+"""Alien Fleet Creation/Update Functions"""
 def create_fleet(settings, screen, ship, aliens):
     """create a fleet of aliens"""
     alien = Alien(settings, screen)
@@ -109,11 +112,13 @@ def update_aliens(settings, screen, ship, aliens, bullets, bombs):
             update_fleet(settings, aliens)
             break
 
+    create_bombs(settings, screen, ship, aliens, bombs)
+
     check_collisions(settings, screen, ship, bullets, aliens, bombs)
 
     new_wave(settings, screen, ship, aliens)
 
-
+"""Collision/Reset/End-Game Functions"""
 def check_collisions(settings, screen, ship, bullets, aliens, bombs):
     if pygame.sprite.groupcollide(bullets, aliens, True, True):
         settings.score += int(settings.points)
@@ -139,7 +144,6 @@ def reset_wave(settings, screen, ship, aliens, bullets):
     ship.center_ship( )
     create_fleet(settings, screen, ship, aliens)
 
-
     sleep(0.5)
 
 
@@ -156,14 +160,6 @@ def alien_invasion(settings, screen, ship, aliens, bullets):
             break
 
 
-def update_bullets(bullets):
-    for bullet in bullets.sprites():
-        bullet.draw_bullet()
-        bullet.update()
-        if bullet.rect.bottom < 0:
-            bullet.kill()
-
-
 def new_wave(settings, screen, ship, aliens):
     if len(aliens) == 0:
         create_fleet(settings, screen, ship, aliens)
@@ -172,10 +168,45 @@ def new_wave(settings, screen, ship, aliens):
 
 def increase_difficulty(settings):
     settings.wave_number += 1
-    settings.alien_speed *= settings.difficulty_scale
-    settings.alien_drop_speed += 1 * settings.difficulty_scale
+    # settings.alien_speed *= settings.difficulty_scale
+    # settings.alien_drop_speed += 1 * settings.difficulty_scale
     settings.points *= settings.difficulty_scale
     settings.scale *= 0.96
+
+
+""" Bombs and Bullets Functions"""
+def update_bullets(bullets):
+    for bullet in bullets.sprites():
+        bullet.draw_bullet()
+        bullet.update()
+        if bullet.rect.bottom < 0:
+            bullet.kill()
+
+
+
+def update_bombs(settings, bombs):
+    for bomb in bombs.sprites():
+        bomb.draw_bomb()
+        bomb.update()
+        if bomb.rect.top > settings.screen_height:
+            bomb.kill()
+
+
+def create_bombs(settings, screen, ship, aliens, bombs):
+    alien_height = []
+    bombing_aliens = Group()
+
+    for alien in aliens:
+        if alien.rect.x == ship.rect.x:
+            alien_height.append(alien.rect.y)
+            bombing_aliens.add(alien)
+            print(len(bombing_aliens))
+
+    for alien in bombing_aliens:
+        if alien_height and alien.rect.y == max(alien_height):
+            new_bomb = Bombs(settings, screen, alien)
+            bombs.add(new_bomb)
+            bombing_aliens.empty()
 
 
 def update_screen(settings, screen, ship, bullets, aliens, bombs, play_button):
@@ -190,6 +221,9 @@ def update_screen(settings, screen, ship, bullets, aliens, bombs, play_button):
 
         # draw new bullets on the screen; move bullets
         update_bullets(bullets)
+
+        # draw new bombs on the screen; move bombs
+        update_bombs(settings, bombs)
 
         # update the ship
         ship.update()

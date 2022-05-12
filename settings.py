@@ -6,7 +6,7 @@ class Settings():
         """ initialize game's settings"""
 
         # screen settings
-        self.bg_color = (230, 230, 230)
+        self.bg_color = (160, 160, 160)
         self.screen_width = 1200
         self.screen_height = 800
 
@@ -31,7 +31,7 @@ class Settings():
         self.wave_number = 1
 
         # bomb settings
-        self.bomb_speed = 2
+        self.bomb_speed = 1
         self.bomb_width = 3
         self.bomb_height = 15
         self.bomb_color = (0, 255, 0)

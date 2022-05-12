@@ -170,6 +170,8 @@ def increase_difficulty(settings):
     settings.wave_number += 1
     # settings.alien_speed *= settings.difficulty_scale
     # settings.alien_drop_speed += 1 * settings.difficulty_scale
+    if settings.bomb_speed <= 4:
+        settings.bomb_speed *= settings.difficulty_scale
     settings.points *= settings.difficulty_scale
     settings.scale *= 0.96
 
@@ -181,7 +183,6 @@ def update_bullets(bullets):
         bullet.update()
         if bullet.rect.bottom < 0:
             bullet.kill()
-
 
 
 def update_bombs(settings, bombs):
@@ -200,13 +201,12 @@ def create_bombs(settings, screen, ship, aliens, bombs):
         if alien.rect.x == ship.rect.x:
             alien_height.append(alien.rect.y)
             bombing_aliens.add(alien)
-            print(len(bombing_aliens))
 
     for alien in bombing_aliens:
         if alien_height and alien.rect.y == max(alien_height):
             new_bomb = Bombs(settings, screen, alien)
             bombs.add(new_bomb)
-            bombing_aliens.empty()
+            # bombing_aliens.empty()
 
 
 def update_screen(settings, screen, ship, bullets, aliens, bombs, play_button):

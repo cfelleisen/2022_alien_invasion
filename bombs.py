@@ -15,7 +15,7 @@ class Bombs(Sprite):
         self.rect = pygame.Rect(0,0, settings.bomb_width, settings.bomb_height)
         # move the bullet to the center/top of the ship
         self.rect.centerx = alien.rect.centerx
-        self.rect.top = alien.rect.top
+        self.rect.top = alien.rect.bottom
 
         # store the bullets position as a decimal value
         self.y = float(self.rect.y)
